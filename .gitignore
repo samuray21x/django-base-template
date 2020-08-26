@@ -5,7 +5,7 @@
 
 
 # Public static dir
-public/static/
+public/*
 
 
 # Byte-compiled / optimized / DLL files
