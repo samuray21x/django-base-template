@@ -1,3 +1,13 @@
+# Filesystem and IDE's directories
+*.idea
+*.vscode
+*.DS_Store
+
+
+# Public static dir
+public/static/
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
