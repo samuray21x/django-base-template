@@ -97,50 +97,52 @@ USE_L10N = True
 USE_TZ = True
 
 # Logging
-LOGS_DIR = SITE_ROOT + '/logs/'
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': '{levelname} {asctime} {pathname} func: {funcName} process:{process:d} thread:{thread:d} MESSAGE: {message}',
-            'style': '{',
+LOGS_ENABLED = not DEBUG
+if LOGS_ENABLED:
+    LOGS_DIR = SITE_ROOT + '/logs/'
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'formatters': {
+            'verbose': {
+                'format': '{levelname} {asctime} {pathname} func: {funcName} process:{process:d} thread:{thread:d} MESSAGE: {message}',
+                'style': '{',
+            },
+            'simple': {
+                'format': '{levelname} {message}',
+                'style': '{',
+            },
         },
-        'simple': {
-            'format': '{levelname} {message}',
-            'style': '{',
+        'handlers': {
+            'debug_file': {
+                'level': 'DEBUG',
+                'class': 'logging.FileHandler',
+                'filename': LOGS_DIR + 'debug.log',
+                'formatter': 'simple',
+            },
+            'info_file': {
+                'level': 'INFO',
+                'class': 'logging.FileHandler',
+                'filename': LOGS_DIR + 'info.log',
+                'formatter': 'verbose'
+            },
+            'main_file': {
+                'level': 'WARNING',
+                'class': 'logging.FileHandler',
+                'filename': LOGS_DIR + 'main.log',
+                'formatter': 'verbose'
+            },
         },
-    },
-    'handlers': {
-        'debug_file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': LOGS_DIR + 'debug.log',
-            'formatter': 'simple',
+        'loggers': {
+            'django': {
+                'handlers': ['main_file'],
+                'level': 'WARNING',
+                'propagate': False,
+            },
+            'core': {
+                'handlers': ['main_file'],
+                'level': 'WARNING',
+                'propagate': False,
+            },
         },
-        'info_file': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': LOGS_DIR + 'info.log',
-            'formatter': 'verbose'
-        },
-        'main_file': {
-            'level': 'WARNING',
-            'class': 'logging.FileHandler',
-            'filename': LOGS_DIR + 'main.log',
-            'formatter': 'verbose'
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['main_file'],
-            'level': 'WARNING',
-            'propagate': False,
-        },
-        'core': {
-            'handlers': ['main_file'],
-            'level': 'WARNING',
-            'propagate': False,
-        },
-    },
-}
+    }
