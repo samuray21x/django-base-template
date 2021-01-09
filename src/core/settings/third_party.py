@@ -1,7 +1,3 @@
-import environ
-
-env = environ.Env()
-environ.Env.read_env()
-
+from core.settings.django import env
 
 

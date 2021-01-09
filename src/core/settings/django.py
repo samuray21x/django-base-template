@@ -4,22 +4,27 @@ import environ
 root = environ.Path(__file__) - 4
 public_root = root.path('public/')
 env = environ.Env()
-environ.Env.read_env()
+environ.Env.read_env(root('.env'))
 
+# Main Django settings
+DEBUG = env.bool('DJANGO_DEBUG', False)
+SECRET_KEY = env.str('DJANGO_SECRET_KEY')
+ALLOWED_HOSTS = env.str('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+INTERNAL_IPS = env.str('INTERNAL_IPS', 'localhost,127.0.0.1').split(',')
+
+WSGI_APPLICATION = 'core.wsgi.application'
+ROOT_URLCONF = 'core.urls'
+
+# static & media files settings
 SITE_ROOT = root()
-STATIC_ROOT = public_root('static')
-STATIC_URL = '/static/'
+STATIC_ROOT = public_root(env.str('STATIC_DIR', 'static'))
+STATIC_URL = env.str('STATIC_URL_BASE', '/static/')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-MEDIA_ROOT = public_root('media')
-MEDIA_URL = '/media/'
-
-DEBUG = env.bool('DEBUG', default=False)
-SECRET_KEY = env.str('SECRET_KEY')
-ALLOWED_HOSTS = []
+MEDIA_ROOT = public_root(env.str('MEDIA_DIR', 'media'))
+MEDIA_URL = env.str('MEDIA_URL_BASE', '/media/')
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -29,12 +34,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'whitenoise',
+    # 'debug_toolbar',
 
     # project apps
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
 
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'core.middleware.MainExceptionMiddleware',
@@ -46,8 +53,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
-ROOT_URLCONF = 'core.urls'
 
 TEMPLATES = [
     {
@@ -65,9 +70,26 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'core.wsgi.application'
+# Databases
+DATABASES = {
+    'default': {
+        'ENGINE': env.str('DB_ENGINE_DRIVER', 'django.db.backends.postgresql'),
+        'NAME': env.str('DB_NAME'),
+        'USER': env.str('DB_USER'),
+        'PASSWORD': env.str('DB_PASSWORD'),
+        'HOST': env.str('DB_HOST'),
+        'PORT': env.str('DB_PORT'),
+    }
+}
 
-# Password validation
+# Authentication & Password validation
+
+# AUTH_USER_MODEL =
+
+# AUTHENTICATION_BACKENDS = [
+#     'django.contrib.auth.backends.ModelBackend',
+#      additional backends
+# ]
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -97,9 +119,10 @@ USE_L10N = True
 USE_TZ = True
 
 # Logging
-LOGS_ENABLED = not DEBUG
+
+LOGS_ENABLED = env.bool('LOGS_ENABLED', not DEBUG)
+LOGS_ROOT = env.str('LOGS_DIR', root('logs'))
 if LOGS_ENABLED:
-    LOGS_DIR = SITE_ROOT + '/logs/'
     LOGGING = {
         'version': 1,
         'disable_existing_loggers': False,
@@ -117,19 +140,25 @@ if LOGS_ENABLED:
             'debug_file': {
                 'level': 'DEBUG',
                 'class': 'logging.FileHandler',
-                'filename': LOGS_DIR + 'debug.log',
+                'filename': LOGS_ROOT + 'debug.log',
+                'maxBytes': 1024 * 1024 * 5,  # 5 MB
+                'backupCount': 10,
                 'formatter': 'simple',
             },
             'info_file': {
                 'level': 'INFO',
                 'class': 'logging.FileHandler',
-                'filename': LOGS_DIR + 'info.log',
+                'filename': LOGS_ROOT + 'info.log',
+                'maxBytes': 1024 * 1024 * 5,  # 5 MB
+                'backupCount': 10,
                 'formatter': 'verbose'
             },
             'main_file': {
                 'level': 'WARNING',
                 'class': 'logging.FileHandler',
-                'filename': LOGS_DIR + 'main.log',
+                'filename': LOGS_ROOT + 'main.log',
+                'maxBytes': 1024 * 1024 * 5,  # 5 MB
+                'backupCount': 10,
                 'formatter': 'verbose'
             },
         },
@@ -146,3 +175,11 @@ if LOGS_ENABLED:
             },
         },
     }
+
+# Email
+EMAIL_BACKEND = env.str('DJANGO_EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
+DEFAULT_FROM_EMAIL = env.str("DEFAULT_FROM_EMAIL", 'default@django.dev')
+EMAIL_HOST = env.str("EMAIL_HOST")
+EMAIL_PORT = env.str("EMAIL_PORT")
+EMAIL_HOST_USER = env.str("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = env.str("EMAIL_HOST_PASSWORD")
