@@ -119,9 +119,10 @@ USE_L10N = True
 USE_TZ = True
 
 # Logging
-
 LOGS_ENABLED = env.bool('LOGS_ENABLED', not DEBUG)
 LOGS_ROOT = env.str('LOGS_DIR', root('logs'))
+if LOGS_ROOT[:-1] != '/':
+    LOGS_ROOT += '/'
 if LOGS_ENABLED:
     LOGGING = {
         'version': 1,
