@@ -77,19 +77,12 @@ DATABASES = {
         'NAME': env.str('DB_NAME'),
         'USER': env.str('DB_USER'),
         'PASSWORD': env.str('DB_PASSWORD'),
-        'HOST': env.str('DB_HOST'),
-        'PORT': env.str('DB_PORT'),
+        'HOST': env.str('DB_HOST', 'localhost'),
+        'PORT': env.str('DB_PORT', '5432'),
     }
 }
 
 # Authentication & Password validation
-
-# AUTH_USER_MODEL =
-
-# AUTHENTICATION_BACKENDS = [
-#     'django.contrib.auth.backends.ModelBackend',
-#      additional backends
-# ]
 
 AUTH_PASSWORD_VALIDATORS = [
     {
