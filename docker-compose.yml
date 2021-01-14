@@ -3,7 +3,7 @@ services:
   nginx:
     build: ./third_party_services/nginx
     ports:
-      - 8001:80
+      - 8888:80
     volumes:
       - public_data:/app/public/
     env_file:
