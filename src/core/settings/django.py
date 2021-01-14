@@ -140,7 +140,7 @@ if LOGS_ENABLED:
         'handlers': {
             'debug_file': {
                 'level': 'DEBUG',
-                'class': 'logging.FileHandler',
+                'class': 'logging.handlers.RotatingFileHandler',
                 'filename': LOGS_ROOT + 'debug.log',
                 'maxBytes': 1024 * 1024 * 5,  # 5 MB
                 'backupCount': 10,
@@ -148,7 +148,7 @@ if LOGS_ENABLED:
             },
             'info_file': {
                 'level': 'INFO',
-                'class': 'logging.FileHandler',
+                'class': 'logging.handlers.RotatingFileHandler',
                 'filename': LOGS_ROOT + 'info.log',
                 'maxBytes': 1024 * 1024 * 5,  # 5 MB
                 'backupCount': 10,
@@ -156,7 +156,7 @@ if LOGS_ENABLED:
             },
             'main_file': {
                 'level': 'WARNING',
-                'class': 'logging.FileHandler',
+                'class': 'logging.handlers.RotatingFileHandler',
                 'filename': LOGS_ROOT + 'main.log',
                 'maxBytes': 1024 * 1024 * 5,  # 5 MB
                 'backupCount': 10,
