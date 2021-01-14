@@ -5,7 +5,7 @@ services:
     ports:
       - 8888:80
     volumes:
-      - public_data:/app/public/
+      - ./public/:/app/public/
     env_file:
       - ./.env
     depends_on:
@@ -15,7 +15,7 @@ services:
     ports:
       - 8000
     volumes:
-      - public_data:/app/public/
+      - ./public/:/app/public/
       - ./logs/:/app/logs/
     env_file:
       - ./.env
@@ -31,4 +31,3 @@ services:
       - ./.env_docker_db
 volumes:
   postgres_data:
-  public_data:
