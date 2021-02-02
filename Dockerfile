@@ -18,4 +18,4 @@ WORKDIR /app/src/
 COPY ./src/ /app/src/
 
 # run gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--preload", "--workers", "3", "core.wsgi:application", "--access-logfile", "/app/logs/gunicorn_access.log", "--error-logfile",  "/app/logs/gunicorn_error.log"]
+CMD ["gunicorn", "--bind", "app:8000", "--preload", "--workers", "3", "core.wsgi:application", "--access-logfile", "/app/logs/gunicorn_access.log", "--error-logfile",  "/app/logs/gunicorn_error.log"]
